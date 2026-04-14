@@ -45,7 +45,10 @@ export const signup = async (req, res) => {
     // jwt
     generateTokenAndSetCookie(res, user._id);
 
-    await sendVerificationEmail(user.email, verificationToken);
+    // Send verification email (non-blocking - don't wait for it)
+    sendVerificationEmail(user.email, verificationToken).catch((error) => {
+      console.log("Failed to send verification email:", error.message);
+    });
 
     res.status(201).json({
       success: true,
@@ -69,12 +72,10 @@ export const verifyEmail = async (req, res) => {
     });
 
     if (!user) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Invalid or expired verification code",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired verification code",
+      });
     }
 
     user.isVerified = true;
@@ -164,12 +165,10 @@ export const forgotPassword = async (req, res) => {
       `${process.env.CLIENT_URL}/reset-password/${resetToken}`,
     );
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Password reset link sent to your email",
-      });
+    res.status(200).json({
+      success: true,
+      message: "Password reset link sent to your email",
+    });
   } catch (error) {
     console.log("Error in forgotPassword ", error);
     res.status(400).json({ success: false, message: error.message });
@@ -218,12 +217,10 @@ export const checkAuth = async (req, res) => {
     console.log("Check Auth - cookies:", req.cookies);
 
     if (!req.userId) {
-      return res
-        .status(401)
-        .json({
-          success: false,
-          message: "Unauthorized - no userId in request",
-        });
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized - no userId in request",
+      });
     }
 
     const user = await User.findById(req.userId).select("-password");
