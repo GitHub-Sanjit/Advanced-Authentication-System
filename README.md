@@ -1,8 +1,6 @@
 <h1 align="center">Advanced Auth Tutorial 🔒 </h1>
 
 
-About This Course:
-
 - 🔧 Backend Setup
 - 🗄️ Database Setup
 - 🔐 Signup Endpoint
