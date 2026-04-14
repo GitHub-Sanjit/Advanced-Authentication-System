@@ -83,7 +83,10 @@ export const verifyEmail = async (req, res) => {
     user.verificationTokenExpiresAt = undefined;
     await user.save();
 
-    await sendWelcomeEmail(user.email, user.name);
+    // Send welcome email (non-blocking - don't wait for it)
+    sendWelcomeEmail(user.email, user.name).catch((error) => {
+      console.log("Failed to send welcome email:", error.message);
+    });
 
     res.status(200).json({
       success: true,
@@ -159,11 +162,13 @@ export const forgotPassword = async (req, res) => {
 
     await user.save();
 
-    // send email
-    await sendPasswordResetEmail(
+    // Send password reset email (non-blocking - don't wait for it)
+    sendPasswordResetEmail(
       user.email,
       `${process.env.CLIENT_URL}/reset-password/${resetToken}`,
-    );
+    ).catch((error) => {
+      console.log("Failed to send password reset email:", error.message);
+    });
 
     res.status(200).json({
       success: true,
@@ -199,7 +204,10 @@ export const resetPassword = async (req, res) => {
     user.resetPasswordExpiresAt = undefined;
     await user.save();
 
-    await sendResetSuccessEmail(user.email);
+    // Send reset success email (non-blocking - don't wait for it)
+    sendResetSuccessEmail(user.email).catch((error) => {
+      console.log("Failed to send reset success email:", error.message);
+    });
 
     res
       .status(200)
