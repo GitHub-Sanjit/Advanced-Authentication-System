@@ -1,4 +1,4 @@
-<h1 align="center">Advanced Auth Tutorial 🔒 </h1>
+<h1 align="center">Advanced Auth System 🔒 </h1>
 
 
 - 🔧 Backend Setup
